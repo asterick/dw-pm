@@ -17,7 +17,7 @@ extern int		main	( void );
 extern void		_copytable( void );
 
 _interrupt(0) void _start_cpt( void ) {
-#pragma asm
+	#pragma asm
 
 	GLOBAL	__START
 	__START:
@@ -60,15 +60,11 @@ _interrupt(0) void _start_cpt( void ) {
 
 void _exit( int i )	{ /* 'i' is parameter in BA */
 {
-        i;
-        do 
-        {
-			_slp();
-        }
-        while( 1 );	/* Program never stops */
+    i;
+    for(;;) _slp();
 }
 
-void _interrupt( 4 ) watchdog(void) {
+_interrupt(4) void watchdog(void) {
 	/* Accept a watchdog interrupt */
 }
 

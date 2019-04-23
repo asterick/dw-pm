@@ -1,24 +1,30 @@
 WINE = wine
-C88_TOOLCHAIN_DIR = ../bin
-C88 = $(WINE) $(C88_TOOLCHAIN_DIR)/c88
-ALC88 = $(WINE) $(C88_TOOLCHAIN_DIR)/alc88
+C88_TOOLCHAIN_DIR = ~/.wine/drive_c/EPSON/S1C88/BIN
 
-TARGET=test
+CC88 = $(WINE) $(C88_TOOLCHAIN_DIR)/CC88.EXE
+AS88 = $(WINE) $(C88_TOOLCHAIN_DIR)/AS88.EXE
 
-SOURCES = main.c
-OBJECTS = $(SOURCES:.c=.obj)
+TARGET=test.min
 
-CFLAGS = -O2 -Ml -Iinclude
+SOURCES = main.c startup.s isr.c
+OBJECTS = $(patsubst %.c,%.obj,$(patsubst %.s,%.obj,$(SOURCES)))
 
-all: $(TARGET).out
+LKFLAGS = -v -Ml -Tlc-d..\\etc\\pokemini.dsc
+CFLAGS 	= -O2 -Ml -Iinclude -Ta-O -Tc-v
+ASFLAGS = -O -Ml
+
+all: $(TARGET)
 
 clean:
-	rm -Rf $(OBJECTS) $(TARGET).out
+	rm -Rf $(OBJECTS) $(TARGET)
 
-$(TARGET).out: $(OBJECTS)
-	echo $(C88) -Ml -cl -o $@ $^
+$(TARGET): $(OBJECTS)
+	$(CC88) $(LKFLAGS)  -o $@ $^
 
 %.obj: %.c
-	$(C88) $(CFLAGS) -o $@ $<
+	$(CC88) $(CFLAGS) -c -o $@ $<
+
+%.obj: %.s
+	$(AS88) $(ASFLAGS) -o $@ $<
 
 .phony: all clean

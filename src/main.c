@@ -11,64 +11,8 @@
   *	On exit the program will fall into an endless loop.
   */
 
-void			_exit	( int );
-void			_start	( void );
-extern int		main	( void );
-extern void		_copytable( void );
+int something;
 
-_interrupt(0) void _start_cpt( void ) {
-	#pragma asm
-
-	GLOBAL	__START
-	__START:
-
-	;==========================================================================
-	;===================  system initialization  ==============================
-	;==========================================================================
-
-	LD	SP,#@DOFF(__lc_es)			; stack pointer initialize
-	LD	BR,#0FFh					; BR register initialize to I/O area
-
-	;---------------  bus mode setting  ---------------------------------------
-						; MCU & MPU mode
-	LD	[BR:00h],#0
-									; single chip mode
-									; /CE0,/CE1,/CE2,/CE3:disenabled
-
-	;--------------  bus and clock control  -----------------------------------
-	LD	[BR:02h],#0
-    								; clock = OSC1
-									; OSC3off
-									; normal power mode
-
-	;---------------  stack pointer page address  -----------------------------
-	LD	[BR:01h],#@DPAG(__lc_es-1)	; set stack pointer page
-									; __lc_es is NOT within stack area
-
-
-	EXTERN  (DATA,TINY)__lc_b_.tbss		;BR is used for tiny data
-	LD	BR,#(@DOFF(__lc_b_.tbss) >> 8)
-
-	#pragma endasm
-
-	/* Use copy table to clear memory and intialize data */
-	_copytable();		/* routine is found in library */
-
-	_exit( main() );	/* Stops program in an endless loop */
+int main(void) {
+  for (;;) _halt();
 }
-
-
-void _exit( int i )	{ /* 'i' is parameter in BA */
-{
-    i;
-    for(;;) _slp();
-}
-
-_interrupt(4) void watchdog(void) {
-	/* Accept a watchdog interrupt */
-}
-
-#pragma asm
-	DEFSECT	".tbss", DATA, TINY, CLEAR
-	SECT	".tbss"
-#pragma endasm

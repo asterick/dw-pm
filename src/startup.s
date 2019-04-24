@@ -8,7 +8,7 @@ JP_FAR  MACRO lbl
         ;; Begin pokemon mini header
         DEFSECT ".min_header", CODE AT 2100H
         SECT    ".min_header"
-        ASCII   "MN"
+        ASCII   "PM"
         JP_FAR  __START
         JP_FAR  _prc_frame_copy_irq
         JP_FAR  _prc_render_irq

@@ -65,7 +65,7 @@ __START:
         LD      [BR:28h],#0FFh
         LD      [BR:29h],#0FFh
         LD      [BR:2Ah],#0FFh
-	CARL	__copytable
+	;CARL	__copytable
 	CARL	_main
 	CARL	__exit
 	RETE
@@ -73,7 +73,7 @@ __START:
 
         GLOBAL  __start_cpt
         GLOBAL  __START
-	EXTERN	(CODE) __copytable
+	;EXTERN	(CODE) __copytable
 	EXTERN	(CODE) _main
         EXTERN  (CODE) __exit
 	CALLS	'_start_cpt', '_copytable'

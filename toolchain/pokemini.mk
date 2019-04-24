@@ -8,8 +8,8 @@ endif
 
 OBJECTS = $(patsubst %.c,%.obj,$(patsubst %.s,%.obj,$(SOURCES)))
 
-LKFLAGS = -v -Ml -Tlc-d$(TOOLCHAIN)/ETC/pokemini.dsc -Tlk-L$(TOOLCHAIN)/LIB
-CFLAGS 	= -O2 -Ml -I$(TOOLCHAIN)/INCLUDE -Ta-O -Tc-v 
+LKFLAGS = -v -Ml -Tlk-d$(TOOLCHAIN)/ETC/pokemini.dsc -Tlk-L$(TOOLCHAIN)/LIB
+CFLAGS 	= -O2 -Ml -I$(TOOLCHAIN)/INCLUDE -Ta-O -Tc-v
 ASFLAGS = -O -Ml
 
 CC88 = $(WINE) $(TOOLCHAIN)/BIN/CC88.EXE

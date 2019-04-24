@@ -16,8 +16,8 @@ AS88 = $(WINE) $(TOOLCHAIN)/BIN/AS88.EXE
 
 all: $(TARGET)
 
-$TARGET: $(TARGET).hex
-	python3 $(TOOLCHAIN)/extract.py $@ $<
+$(TARGET): $(TARGET).hex
+	python3 $(TOOLCHAIN)extract.py $@ $<
 
 $(TARGET).hex: $(OBJECTS)
 	$(CC88) $(LKFLAGS)  -o $@ $^

@@ -88,7 +88,9 @@ with open(sys.argv[-2], "wb") as fo:
 			delta = (address - target + len(branch) + 2) & 0xFFFF
 			branch += b'\xF3' + delta.to_bytes(2, byteorder='little')
 
-			print (branch)
+			while len(branch) < 6:
+				branch += b'\x00'
+
 			binary = binary[:target] + branch + binary[target+len(branch):]
 
 

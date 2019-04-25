@@ -4,23 +4,23 @@ else # In Unix we use wine and assume the tools are in the PATH
 	WINE := wine
 endif
 
-TOOLCHAIN := $(dir $(lastword $(MAKEFILE_LIST)))/
+TOOLCHAIN := $(dir $(lastword $(MAKEFILE_LIST)))
 OBJECTS = $(patsubst %.c,%.obj,$(patsubst %.s,%.obj,$(SOURCES)))
 
-LKFLAGS = -v -Ml -Tlk-d$(TOOLCHAIN)/ETC/pokemini.dsc -Tlc-d$(TOOLCHAIN)/ETC/pokemini.dsc -Tlk-L$(TOOLCHAIN)/LIB -Tlc-f3
-CFLAGS 	= -O2 -Ml -I$(TOOLCHAIN)/INCLUDE -Ta-O -Tc-v
+LKFLAGS = -v -Ml -Tlk-d$(TOOLCHAIN)ETC/pokemini.dsc -Tlc-d$(TOOLCHAIN)ETC/pokemini.dsc -Tlk-L$(TOOLCHAIN)LIB
+CFLAGS 	= -O2 -Ml -I$(TOOLCHAIN)INCLUDE -Ta-O -Tc-v
 ASFLAGS = -O -Ml
 
-CC88 = $(WINE) $(TOOLCHAIN)/BIN/CC88.EXE
-AS88 = $(WINE) $(TOOLCHAIN)/BIN/AS88.EXE
+CC88 = $(WINE) $(TOOLCHAIN)BIN/CC88.EXE
+AS88 = $(WINE) $(TOOLCHAIN)BIN/AS88.EXE
 
 all: $(TARGET)
 
 $(TARGET): $(TARGET).hex
-	python3 $(TOOLCHAIN)extract.py $@ $<
+	python3 $(TOOLCHAIN)extract.py $(TARGET).map $@ $<
 
 $(TARGET).hex: $(OBJECTS)
-	$(CC88) $(LKFLAGS)  -o $@ $^
+	$(CC88) $(LKFLAGS) -Tlc-f3 -o $@ $^
 
 %.obj: %.c
 	echo $(MAKEFILES)
@@ -30,6 +30,6 @@ $(TARGET).hex: $(OBJECTS)
 	$(AS88) $(ASFLAGS) -o $@ $<
 
 clean:
-	rm -Rf $(TARGET) $(TARGET).hex $(OBJECTS)
+	rm -f $(TARGET) $(TARGET).hex $(OBJECTS)
 
 .phony: all clean

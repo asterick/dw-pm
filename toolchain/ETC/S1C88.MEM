@@ -16,6 +16,3 @@
 memory {
 	/* No external memory; all memory defined as internal memory */
 }
-
-
-

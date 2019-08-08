@@ -38,7 +38,7 @@ cpu {
   amode data_tiny {
     attribute Y5;
     mau 8;
-    map src=0 dst=0x2000 size=0x100 amode=data_short;
+    map src=0 dst=0x2000 size=0x100 space=SMC88_space;
   }
 
   /////////////////////////////////////////////////////////
@@ -76,70 +76,26 @@ cpu {
   //
   space SMC88_space {
     mau 8;
-    map src=0 size=16M dst=0 bus=SMC88_bus label=total_range;
+    map src=0 size=0x200000 dst=0 bus=SMC88_bus label=total_range;
   }
 
-
-  /////////////////////////////////////////////////////////
-  //
-  // bus 
-  // - 8 bits addressable
-  // - 0-16M address range mapped to 0-16M internal bus 
-  //
   bus SMC88_bus {
     mau 8;
-    map src=0 size=16M dst=0 bus=internal_bus;
+    map src=0 size=2M dst=0 bus=internal_bus;
   }
 
   bus internal_bus {
     mau 8;
-    mem addr=0        chips=bios;
-    mem addr=0x1000   chips=prc_ram;
-    mem addr=0x14E0   chips=ram;
+    mem addr=0        chips=i_rom;
+    mem addr=0x1000   chips=i_ram;
     mem addr=0x2000   chips=io_regs;
-    mem addr=0x2100   chips=cart;
+    mem addr=0x2100   chips=e_rom;
   }
 
-////////////////////////////////////////////////////////////////////////
-//
-//  I N T E R N A L   C H I P S
-//  
-//
-
-  /////////////////////////////////////////////////////////
-  // Internal bios 
-  // special (cannot allocate in this area)
-  // 8 bits addressable
-  // 1000(hex) size
-  //
-  chips  bios  attr=s mau=8 size=0x1000;
-
-
-  /////////////////////////////////////////////////////////
-  // Internal ram 
-  // writable
-  // 8 bits addressable
-  // 1000(hex) size
-  //
-  chips prc_ram attr=s mau=8 size=0x4E0;
-  chips  ram  attr=w mau=8 size=0xB20;
-
-  /////////////////////////////////////////////////////////
-  // Hardware registers
-  // writable
-  // 8 bits addressable
-  // F00(hex) size
-  //  
-  chips  io_regs attr=w mau=8 size=0x100;
-
-  /////////////////////////////////////////////////////////
-  // Cartridge ROM
-  // read-only
-  // 8 bits addressable
-  //  1FDF00(hex) size  (~2MB)
-  //
-  chips  cart  attr=r mau=8 size=0x200000;
-
+  chips i_rom   attr=r mau=8 size=0x100;
+  chips i_ram   attr=w mau=8 size=0x1000;
+  chips io_regs attr=s mau=8 size=0x100;
+  chips e_rom   attr=r mau=8 size=0x200000;
 
   regsfr  reg88.dat
 }

@@ -267,31 +267,9 @@ class Decoder:
 		elif code == 0x80:
 			return None
 		elif code <= 0x8F:
-			value = 0
-			for i in range(code - 0x80):
-				value = (value << 8) | self.byte()
-			return value
+			return sum([v << (i * 8) for i, v in enumerate(self.fo.read(code - 0x80)[::-1])])
 		else:
 			raise Exception("Expected a number")
 
 	def string(self):
 		return self.fo.read(self.number())
-
-
-with open(sys.argv[1], "rb") as fobj:
-	for command in Decoder(fobj).commands():
-		try:
-			print (command)
-		except:
-			bytes = []
-			while True:	
-				before = fobj.tell()
-				code = ord(fobj.read(1))
-
-				if code >= 0xE0:
-					fobj.seek(before)
-					break
-				else:
-					bytes += ["%02x" % code]
-
-				print (' '.join(bytes))

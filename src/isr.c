@@ -1,8 +1,4 @@
-void _interrupt(0) IRQHandler_01(void) {
-	// TODO
-}
-
-void _interrupt(1) IRQHandler_02(void) {
+void _interrupt(2) IRQ_WatchDog(void) {
 	// TODO
 }
 

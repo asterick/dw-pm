@@ -25,6 +25,7 @@ DEF_IRC MACRO
         ;; Begin startup code
 	DEFSECT	".startup", CODE, SHORT
 	SECT	".startup"
+__start_cpt:
 __START:
         ;==========================================================================
         ;===================  system initialization  ==============================

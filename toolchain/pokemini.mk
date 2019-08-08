@@ -1,27 +1,19 @@
-ifeq ($(OS), Windows_NT)
-	WINE :=
-else # In Unix we use wine and assume the tools are in the PATH
-	WINE := wine
-endif
-
+# Use wine if installed
+WINE := ${shell which wine}
 TOOLCHAIN := $(dir $(lastword $(MAKEFILE_LIST)))
 OBJECTS = $(patsubst %.c,%.obj,$(patsubst %.s,%.obj,$(SOURCES)))
 
 LKFLAGS = -v -Ml -Tlk-d$(TOOLCHAIN)ETC/pokemini.dsc -Tlc-d$(TOOLCHAIN)ETC/pokemini.dsc -Tlk-L$(TOOLCHAIN)LIB
-CFLAGS 	= -O2 -Ml -I$(TOOLCHAIN)INCLUDE -Ta-O -Tc-v
+CFLAGS 	= -O2 -Ml -I$(TOOLCHAIN)INCLUDE -Ta-O
 ASFLAGS = -O -Ml
 
 CC88 = $(WINE) $(TOOLCHAIN)BIN/CC88.EXE
 AS88 = $(WINE) $(TOOLCHAIN)BIN/AS88.EXE
 
-all: $(TARGET) $(TARGET).obj
-	python3 $(TOOLCHAIN)dump.py $(TARGET).obj
+all: $(TARGET)
 
-$(TARGET): $(TARGET).hex
-	python3 $(TOOLCHAIN)extract.py $(TARGET).map $@ $<
-
-$(TARGET).hex: $(OBJECTS)
-	$(CC88) $(LKFLAGS) -Tlc-f3 -o $@ $^
+$(TARGET): $(TARGET).obj
+	python3 $(TOOLCHAIN)extract.py $@ $<
 
 $(TARGET).obj: $(OBJECTS)
 	$(CC88) $(LKFLAGS) -o $@ $^
@@ -34,6 +26,6 @@ $(TARGET).obj: $(OBJECTS)
 	$(AS88) $(ASFLAGS) -o $@ $<
 
 clean:
-	rm -f $(TARGET) $(TARGET).hex $(OBJECTS)
+	rm -f $(TARGET) $(TARGET).obj $(OBJECTS)
 
 .phony: all clean

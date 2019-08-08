@@ -14,13 +14,17 @@ ASFLAGS = -O -Ml
 CC88 = $(WINE) $(TOOLCHAIN)BIN/CC88.EXE
 AS88 = $(WINE) $(TOOLCHAIN)BIN/AS88.EXE
 
-all: $(TARGET)
+all: $(TARGET) $(TARGET).obj
+	python3 $(TOOLCHAIN)dump.py $(TARGET).obj
 
 $(TARGET): $(TARGET).hex
 	python3 $(TOOLCHAIN)extract.py $(TARGET).map $@ $<
 
 $(TARGET).hex: $(OBJECTS)
 	$(CC88) $(LKFLAGS) -Tlc-f3 -o $@ $^
+
+$(TARGET).obj: $(OBJECTS)
+	$(CC88) $(LKFLAGS) -o $@ $^
 
 %.obj: %.c
 	echo $(MAKEFILES)

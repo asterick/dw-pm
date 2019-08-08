@@ -25,7 +25,6 @@ DEF_IRC MACRO
         ;; Begin startup code
 	DEFSECT	".startup", CODE, SHORT
 	SECT	".startup"
-__start_cpt:
 __START:
         ;==========================================================================
         ;===================  system initialization  ==============================
@@ -40,7 +39,7 @@ __START:
 
         LD      SC, #030h
 
-        LD      [BR:27h], #0FFh
+        LD      [BR:27h], #0FFh                 ; Flush interrupts
         LD      [BR:28h], #0FFh
         LD      [BR:29h], #0FFh
         LD      [BR:2Ah], #0FFh

@@ -1,6 +1,6 @@
 TARGET=test.min
 
-SOURCES = src/main.c src/startup.s src/isr.c
+SOURCES = $(shell find src -name "*.c") $(shell find src -name "*.s")
 
 include toolchain/pokemini.mk
 

@@ -82,17 +82,17 @@ for irq, address in vectors.items():
 
 	if target < 0x2102 or target >= 0x21A4:
 		raise Exception('Illegal IRQ %02x' % irq)
-	
+
 	if (address & 0xFF8000) != 0: # Lower page
 		# LD NB, bank(target)
 		branch = b'\xCE\xC4' + (address >> 15).to_bytes(1)
 	else:
 		branch = b''
 	
-	delta = (address - target + len(branch) + 2) & 0xFFFF
+	delta = (address - target + len(branch) - 2) & 0xFFFF
 	branch += b'\xF3' + delta.to_bytes(2, byteorder='little')
 
 	output[target:target+len(branch)] = branch
 
 with open(args.output, "wb") as fo:
-	fo.write(output[0x2100:])
+	fo.write(output)

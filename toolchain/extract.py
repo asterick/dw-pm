@@ -17,7 +17,7 @@ def evaluate(exp):
 	size, = list(filter(lambda x: isinstance(x, int), exp))
 	return size
 
-output = b'\x00' * 0x21D0
+output = bytearray(b'\x00' * 0x21D0)
 
 with open(args.input, "rb") as fi:
 	decoder = Decoder(fi)
@@ -37,6 +37,7 @@ with open(args.input, "rb") as fi:
 				vectors[0] = evaluate(expression)
 		elif command[0] == "LD":
 			command, data = command
+			data = data[::-1]
 			
 			if variables[section] == None:
 				raise Exception("No section specified for load")
@@ -48,7 +49,7 @@ with open(args.input, "rb") as fi:
 					raise Exception("Misaligned interrupt vector (must be multiple of 2)")
 				index = int(address / 2)
 				
-				for offset, vector in enumerate(unpack("<%iH" % (len(data) / 2), data)):
+				for offset, vector in enumerate(unpack(">%iH" % (len(data) / 2), data)):
 					if (index + offset) in vectors:
 						raise Exception("IRQ %i already defined" % (index + offset))
 					
@@ -57,9 +58,11 @@ with open(args.input, "rb") as fi:
 				while len(output) < address:
 					output += b'\x00'
 
-				output = output[:address] + data + output[address+len(data):]
+				output[address:address+len(data)] = data
 			else:
 				raise Exception("Data mapped to reserved space")
+
+			variables[section] += len(data)
 
 if not 0 in vectors:
 	raise Exception("No entrypoint supplied")

@@ -26,6 +26,6 @@ $(TARGET).obj: $(OBJECTS)
 	$(AS88) $(ASFLAGS) -o $@ $<
 
 clean:
-	rm -f $(TARGET) $(TARGET).obj $(OBJECTS)
+	rm -f $(TARGET) $(TARGET).obj $(TARGET).map $(OBJECTS)
 
 .phony: all clean

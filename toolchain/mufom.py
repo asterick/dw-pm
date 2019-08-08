@@ -1,12 +1,17 @@
 from struct import unpack
-import sys
+import sys, re
+
+# Not listed:
+# @SPLT
+# @CALL
+6# ?
 
 FUNCTIONS = {
-	0x90: "@UDEF0",
-	0x91: "@UDEF1",
+	0x90: "<<",
+	0x91: ">>",
 	0x92: "@UDEF2",
-	0x93: "@UDEF3",
-	0x94: "@UDEF4",
+	0x93: "@DUPL",
+	0x94: "@EXCH",
 	0x95: "@UDEF5",
 	0x96: "@UDEF6",
 	0x97: "@UDEF7",
@@ -44,8 +49,10 @@ FUNCTIONS = {
 	0xB5: "@ERR",
 	0xB6: "@IF",
 	0xB7: "@ELSE",
-	0xB8: "@END",
+	0xB8: "@ENDIF",
 	0xB9: "@ISDEF",
+	0xBE: "(",
+	0xBF: ")"
 }
 
 class Decoder:
@@ -93,7 +100,7 @@ class Decoder:
 
 			# Value Assignment
 			elif code == 0xE2:
-				yield ('AS', self.variable(), self.list("Expression", "Variable", "Number", "Function"))
+				yield ('AS', self.variable(), self.expression())
 			
 			# Loading Commands
 			elif code == 0xED:
@@ -135,12 +142,8 @@ class Decoder:
 
 		if code <= 0x8F:
 			return "Number"
-		elif code >= 0x90 and code <= 0xBD:
+		elif code >= 0x90 and code <= 0xBF:
 			return "Function"
-		elif code == 0xBE:
-			return "Expression"
-		elif code == 0xBF:
-			return "ExpressionEnd"
 		elif code >= 0xC1 and code <= 0xDA:
 			return "Letter"
 		elif code >= 0xE0 and code <= 0xF9:
@@ -169,9 +172,7 @@ class Decoder:
 			"Function": self.function,
 			"Number": self.number,
 			"Letter": self.letter,
-			"Variable": self.variable,
-			"Expression": self.expression,
-			"ExpressionEnd": self.byte
+			"Variable": self.variable
 		}
 
 		return translate[type]()
@@ -210,11 +211,11 @@ class Decoder:
 		return self.list("Number")
 
 	def expressions(self):
-		return self.list("Expression", "Number", "Variable")
+		return self.expression()
 
 	# Atomics
 	def term(self):
-		return self.expect("Expression", "Number", "Variable")
+		return self.expect("Function", "Number", "Variable")
 
 	def variable(self):
 		prefix = self.letter()
@@ -233,15 +234,8 @@ class Decoder:
 			return prefix
 			raise Exception("Expected a variable")
 
-	def expression(self):
-		if self.byte() != 0xBE:
-			raise Exception("Expected an expression")
-
-		list = self.list("Function", "Variable", "Number")
-
-		self.expect("ExpressionEnd")
-
-		return list
+	def expression(self, top = True):
+		return self.list("Variable", "Number", "Function")
 
 	def function(self):
 		code = self.byte()

@@ -9,11 +9,20 @@ ASFLAGS = -O -Ml
 
 CC88 = $(WINE) $(TOOLCHAIN)BIN/CC88.EXE
 AS88 = $(WINE) $(TOOLCHAIN)BIN/AS88.EXE
+EXPORT_FLAGS=
+
+ifdef GAME_CODE
+EXPORT_FLAGS += --code=$(GAME_CODE)
+endif
+
+ifdef GAME_TITLE
+EXPORT_FLAGS += --title=$(GAME_TITLE)
+endif
 
 all: $(TARGET)
 
 $(TARGET): $(TARGET).obj
-	python3 $(TOOLCHAIN)extract.py $@ $<
+	python3 $(TOOLCHAIN)extract.py $(EXPORT_FLAGS) --output $@ $<
 
 $(TARGET).obj: $(OBJECTS)
 	$(CC88) $(LKFLAGS) -o $@ $^

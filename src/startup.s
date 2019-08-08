@@ -1,27 +1,5 @@
 $CASE ON
 
-DEF_IRC MACRO
-        OR      SC,#0C0h
-^loop:  HALT
-        JRS     ^loop
-        ENDM
-
-        ;; Begin pokemon mini header
-        DEFSECT ".min_header", CODE AT 2100H
-        SECT    ".min_header"
-        ASCII   "PM"
-        JRL     __START
-        DB      0, 0, 0
-        DUP     26
-        DEF_IRC
-        ENDM
-        ASCII   "NINTENDO"
-    
-        DEFSECT ".min_header_tail", CODE AT 21BCH
-        SECT    ".min_header_tail"
-        ASCII   "2P"
-        DB      0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-
         ;; Begin startup code
 	DEFSECT	".startup", CODE, SHORT
 	SECT	".startup"

@@ -65,7 +65,7 @@ cpu {
   amode data {
     attribute Y2;
     mau 8;
-    map src=0 size=16M dst=0 space=SMC88_space;
+    map src=0 size=2M dst=0 space=SMC88_space;
   }
 
   /////////////////////////////////////////////////////////
@@ -76,7 +76,7 @@ cpu {
   //
   space SMC88_space {
     mau 8;
-    map src=0 size=0x200000 dst=0 bus=SMC88_bus label=total_range;
+    map src=0 size=2M dst=0 bus=SMC88_bus label=total_range;
   }
 
   bus SMC88_bus {

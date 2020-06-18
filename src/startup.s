@@ -14,24 +14,18 @@ __START:
         LD      [BR:25h], #080h
         LD      [BR:80h], #08h
         LD      [BR:81h], #08h
-        ;LD     [BR:81h], #09h
 
-        LD      SC, #030h
+        LD      SC, #00h
 
         LD      [BR:27h], #0FFh                 ; Flush interrupts
         LD      [BR:28h], #0FFh
         LD      [BR:29h], #0FFh
         LD      [BR:2Ah], #0FFh
 
-_loop:  LD      A, [BR:08Ah]
-        LD      [BR:0FEh], #081h
-        LD      [BR:0FFh], A
-        JRS     _loop
 	CARL	__copytable
 	CARL	_main
 	CARL	__exit
 	RETE
-
 
         GLOBAL  __start_cpt
         GLOBAL  __START
@@ -42,5 +36,4 @@ _loop:  LD      A, [BR:08Ah]
 	CALLS	'_start_cpt', 'main'
 	CALLS	'_start_cpt', '_exit'
 
-        
-	END
+        END
